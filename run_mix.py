@@ -19,6 +19,9 @@ def run_irleed(options):
         # weights = np.random.rand(5)*ARGS.weight_scale
         weights = np.array([ARGS.demo_beta] * ARGS.n_components)
 
+    # save the generator "true betas" 
+    result['true_betas'] = None if weights[0] is None else np.array(weights, dtype=float)
+    
     # learn_eps is False if we fix epsilons to zero
     algo = I.irleed(learn_eps=not ARGS.fix_eps_zero)
     
