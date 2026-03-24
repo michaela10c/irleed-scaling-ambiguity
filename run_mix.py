@@ -12,12 +12,19 @@ import random
 
 def run_irleed(options):
     result = {}
+    
     if ARGS.weight_scale > 20:
-        # weights = [None]*5
         weights = [None] * ARGS.n_components
     else:
-        # weights = np.random.rand(5)*ARGS.weight_scale
-        weights = np.array([ARGS.demo_beta] * ARGS.n_components)
+        if ARGS.demo_betas is not None:
+            if len(ARGS.demo_betas) != ARGS.n_components:
+                raise ValueError(
+                    f"--demo_betas has length {len(ARGS.demo_betas)} "
+                    f"but --n_components={ARGS.n_components}"
+                )
+            weights = np.array(ARGS.demo_betas, dtype=float)
+        else:
+            weights = np.array([ARGS.demo_beta] * ARGS.n_components, dtype=float)
 
     # save the generator "true betas" 
     result['true_betas'] = None if weights[0] is None else np.array(weights, dtype=float)
@@ -36,14 +43,19 @@ def run_irleed(options):
 
 def main():
     # pathing 
+    beta_tag = (
+        f"demo_betas_{'_'.join(f'{b:.3f}' for b in ARGS.demo_betas)}"
+        if ARGS.demo_betas is not None
+        else f"demo_beta_{ARGS.demo_beta:.3f}"
+    )
+
     save_dir = os.path.join(
         ROOT,
         'results',
-        ARGS.save_dir,          # e.g. 'gridworld' or 'gridworld_noeps'
-        f'env_{ARGS.env_id}',   # e.g. 'env_1'
-        f'demo_beta_{ARGS.demo_beta:.3f}',
+        ARGS.save_dir,
+        f'env_{ARGS.env_id}',
+        beta_tag,
         'noeps' if ARGS.fix_eps_zero else 'eps'
-        # f'{ARGS.weight_scale:.3f}'  # e.g. '0.400'
     )
     
     # this will create all parents if needed and not crash if they exist
@@ -135,6 +147,14 @@ if __name__ == "__main__":
     parser.add_argument('--fix_eps_zero', action='store_true', help="If set, fixes all per-demonstrator epsilons to zero (no epsilon noise)")
     parser.add_argument('--n_components', type=int, default=5)
     parser.add_argument('--demo_beta', type=float, default=1.0)  # used ONLY for data generation
+    parser.add_argument(
+        '--demo_betas',
+        type=float,
+        nargs='+',
+        default=None,
+        help='List of generator betas for heterogeneous demonstrators, e.g. --demo_betas 0.3 1.0 5.0'
+    )
+    
     ARGS = parser.parse_args()
     print(ARGS)
     
