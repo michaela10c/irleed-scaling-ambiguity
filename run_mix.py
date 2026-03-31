@@ -10,29 +10,91 @@ from tqdm import trange
 import traceback
 import random
 
+
+def load_stage_rewards_from_file(result_path, stage_iters, use_mean_history=True):
+    """
+    Load theta snapshots from an earlier run and use them as staged demonstrator rewards.
+
+    result_path: path to a saved pickle [options, data]
+    stage_iters: list like [10, 100, 999]
+    use_mean_history: if True, average theta history across valid seeds;
+                      otherwise use the first valid seed only
+    """
+    with open(result_path, "rb") as f:
+        old_options, old_data = pickle.load(f)
+
+    valid = [d for d in old_data if d is not None and "log" in d and "theta" in d["log"] and len(d["log"]["theta"]) > 0]
+    if len(valid) == 0:
+        raise RuntimeError(f"No valid theta history found in {result_path}")
+
+    if use_mean_history:
+        T = max(len(d["log"]["theta"]) for d in valid)
+        F = len(np.array(valid[0]["log"]["theta"][0]).reshape(-1))
+
+        theta_sum = np.zeros((T, F), dtype=np.float64)
+        theta_count = np.zeros((T, F), dtype=np.float64)
+
+        for d in valid:
+            th = np.stack([np.array(x).reshape(-1) for x in d["log"]["theta"]], axis=0)
+            pad = np.full((T, F), np.nan, dtype=np.float64)
+            pad[:th.shape[0]] = th
+            mask = np.isfinite(pad)
+            theta_sum[mask] += pad[mask]
+            theta_count[mask] += 1.0
+
+        theta_hist = theta_sum / (theta_count + 1e-12)
+    else:
+        th = valid[0]["log"]["theta"]
+        theta_hist = np.stack([np.array(x).reshape(-1) for x in th], axis=0)
+
+    rewards = []
+    T_hist = theta_hist.shape[0]
+    for t in stage_iters:
+        tt = max(0, min(int(t), T_hist - 1))
+        rewards.append(theta_hist[tt].copy())
+
+    return rewards
+
 def run_irleed(options):
     result = {}
-    
-    if ARGS.weight_scale > 20:
+
+    # choose generator betas
+    if ARGS.demo_betas is not None:
+        weights = np.array(ARGS.demo_betas, dtype=float)
+        if len(weights) != ARGS.n_components:
+            raise ValueError("--demo_betas must have length equal to --n_components")
+    elif ARGS.weight_scale > 20:
         weights = [None] * ARGS.n_components
     else:
-        if ARGS.demo_betas is not None:
-            if len(ARGS.demo_betas) != ARGS.n_components:
-                raise ValueError(
-                    f"--demo_betas has length {len(ARGS.demo_betas)} "
-                    f"but --n_components={ARGS.n_components}"
-                )
-            weights = np.array(ARGS.demo_betas, dtype=float)
-        else:
-            weights = np.array([ARGS.demo_beta] * ARGS.n_components, dtype=float)
+        weights = np.array([ARGS.demo_beta] * ARGS.n_components)
 
-    # save the generator "true betas" 
     result['true_betas'] = None if weights[0] is None else np.array(weights, dtype=float)
-    
+
+    # optional: staged demonstrator rewards from earlier run
+    stage_rewards = None
+    if ARGS.stage_demo_file is not None:
+        if ARGS.stage_demo_iters is None:
+            raise ValueError("If --stage_demo_file is used, also provide --stage_demo_iters")
+        stage_rewards = load_stage_rewards_from_file(
+            ARGS.stage_demo_file,
+            ARGS.stage_demo_iters,
+            use_mean_history=not ARGS.stage_demo_use_first_seed
+        )
+        if len(stage_rewards) != ARGS.n_components:
+            raise ValueError("Number of stage rewards must equal n_components")
+
     # learn_eps is False if we fix epsilons to zero
     algo = I.irleed(learn_eps=not ARGS.fix_eps_zero)
-    
-    algo.reset_data(options['ratios'], weights, options['lam'], options['n_traj'], options)
+
+    algo.reset_data(
+        options['ratios'],
+        weights,
+        options['lam'],
+        options['n_traj'],
+        options,
+        stage_rewards=stage_rewards
+    )
+
     result['log'] = algo.run_irleed(outer_eps=1e-4,inner_eps=1e-4,max_steps=options['max_steps'])
     result['dem_rews'] = algo.setup['dem_rews']
     result['dem_lens'] = algo.setup['dem_lens']
@@ -154,7 +216,19 @@ if __name__ == "__main__":
         default=None,
         help='List of generator betas for heterogeneous demonstrators, e.g. --demo_betas 0.3 1.0 5.0'
     )
-    
+
+    parser.add_argument('--demo_betas', type=float, nargs='+', default=None,
+                    help="Optional list of demonstrator betas, e.g. --demo_betas 0.3 1.0 5.0")
+
+    parser.add_argument('--stage_demo_file', type=str, default=None,
+                        help="Path to an earlier saved result file whose theta history will be used as staged demonstrator rewards")
+
+    parser.add_argument('--stage_demo_iters', type=int, nargs='+', default=None,
+                        help="Iteration indices used to extract staged demonstrator rewards, e.g. --stage_demo_iters 10 100 999")
+
+    parser.add_argument('--stage_demo_use_first_seed', action='store_true',
+                        help="If set, use the first valid seed from stage_demo_file instead of averaging theta histories across seeds")
+        
     ARGS = parser.parse_args()
     print(ARGS)
     
