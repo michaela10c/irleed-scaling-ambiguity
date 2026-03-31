@@ -28,9 +28,8 @@ class irleed:
         
         self.t = None
         
-
-    def reset_data(self, ratios, weights, lam, n_traj, options):
-        self.setup = H.get_setup(ratios, weights, lam, n_traj, options)
+    def reset_data(self, ratios, weights, lam, n_traj, options, stage_rewards=None):
+        self.setup = H.get_setup(ratios, weights, lam, n_traj, options, stage_rewards=stage_rewards)
         # get names and norms
         self.setup['names'] = ['Dem_%d'%(i) for i in range(self.setup['n'])]
         self.setup['norms'] = [np.linalg.norm(self.setup['epsilons'][i]) for i in range(self.setup['n'])]
