@@ -209,16 +209,9 @@ if __name__ == "__main__":
     parser.add_argument('--fix_eps_zero', action='store_true', help="If set, fixes all per-demonstrator epsilons to zero (no epsilon noise)")
     parser.add_argument('--n_components', type=int, default=5)
     parser.add_argument('--demo_beta', type=float, default=1.0)  # used ONLY for data generation
-    parser.add_argument(
-        '--demo_betas',
-        type=float,
-        nargs='+',
-        default=None,
-        help='List of generator betas for heterogeneous demonstrators, e.g. --demo_betas 0.3 1.0 5.0'
-    )
 
     parser.add_argument('--demo_betas', type=float, nargs='+', default=None,
-                    help="Optional list of demonstrator betas, e.g. --demo_betas 0.3 1.0 5.0")
+                    help="Optional list of demonstrator betas, e.g. --demo_betas 0.3 1.0 5.0") # used ONLY for data generation
 
     parser.add_argument('--stage_demo_file', type=str, default=None,
                         help="Path to an earlier saved result file whose theta history will be used as staged demonstrator rewards")
