@@ -139,7 +139,8 @@ def main():
     options['max_steps'] = ARGS.max_steps
     # options['ratios'] = [0.2]*5
     options['ratios'] = [1.0] if ARGS.n_components == 1 else [1.0/ARGS.n_components]*ARGS.n_components
-    options['n_traj'] = 5000 # increase # of trajectories
+    # options['n_traj'] = 5000 # increase # of trajectories
+    options['n_traj'] = 500
     options['exp_key'] = ARGS.exp_key
     options['causal'] = ARGS.causal
     options['fix_eps_zero'] = ARGS.fix_eps_zero
