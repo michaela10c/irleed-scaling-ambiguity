@@ -18,7 +18,7 @@ We evaluate three experimental settings:
 The implementation builds on the original IRLEED codebase, with a root-level script for running experiments.
 
 ```
-irleed_learning/
+irleed-scaling-ambiguity/
 ├── run_mix.py          (main experiment entry point)
 ├── src/
 │   ├── irl_maxent/     (Maximum Entropy IRL baseline)
