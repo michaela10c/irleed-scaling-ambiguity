@@ -38,10 +38,10 @@ src/
 
 Module roles:
 
-- irl_maxent/
+- `irl_maxent/`
   Standard MaxEnt IRL implementation used as a baseline.
 
-- mix_irl/
+- `mix_irl/`
   IRLEED implementation and extensions used in this project:
   - mixture modeling across components
   - beta (expertise) estimation
@@ -63,7 +63,7 @@ Module roles:
 
 All outputs are stored under:
 
-results/gridworld_simple/
+`results/gridworld_simple/`
 
 ### 1. Standard IRLEED Experiments
 
@@ -72,21 +72,19 @@ results/gridworld_simple/irleed/env_1/
 Contains:
 
 Homogeneous:
-demo_beta_0.100/noeps/baseline.p
-demo_beta_1.000/noeps/baseline.p
-demo_beta_5.000/noeps/baseline.p
-demo_beta_10.000/noeps/baseline.p
+`demo_beta_0.100/noeps/baseline.p`
+`demo_beta_1.000/noeps/baseline.p`
+`demo_beta_5.000/noeps/baseline.p`
+`demo_beta_10.000/noeps/baseline.p`
 
 Heterogeneous:
-demo_betas_0.300_1.000_5.000/noeps/baseline.p
+`demo_betas_0.300_1.000_5.000/noeps/baseline.p`
 
 ---
 
 ### 2. Epsilon-Only Experiments
 
-results/gridworld_simple/irleed_eps_only/env_1/
-
-demo_betas_1.000_1.000_1.000/eps/lam_2.000.p
+`results/gridworld_simple/irleed_eps_only/env_1/demo_betas_1.000_1.000_1.000/eps/lam_2.000.p`
 
 ---
 
@@ -95,7 +93,7 @@ demo_betas_1.000_1.000_1.000/eps/lam_2.000.p
 ### 1. Homogeneous Setting
 
 Setup:
-- n_components = 1
+- `n_components = 1`
 - beta values = 0.1, 1.0, 5.0, 10.0
 - no epsilon
 
@@ -141,15 +139,17 @@ Setup:
 
 Run epsilon-only experiment:
 
+```
 python run_mix.py \
   --save_dir gridworld_simple/irleed_eps_only \
   --n_components 3 \
   --demo_betas 1.0 1.0 1.0 \
   --max_steps 1000
+```
 
 Modify:
-- n_components
-- demo_betas
+- `n_components`
+- `demo_betas`
 
 to reproduce other experiments.
 
@@ -245,10 +245,10 @@ Scaling ambiguity persists even with:
 
 ## Files
 
-run_mix.py          main experiment script  
-src/irl_maxent/     MaxEnt IRL  
-src/mix_irl/        IRLEED + extensions  
-results/            outputs  
+`run_mix.py`          main experiment script  
+`src/irl_maxent/`     MaxEnt IRL  
+`src/mix_irl/`        IRLEED + extensions  
+`results/`            outputs  
 
 ---
 
