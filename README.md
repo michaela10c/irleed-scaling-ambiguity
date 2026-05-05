@@ -84,7 +84,7 @@ All outputs are stored under:
 
 ---
 
-## Precomputed Results (Optional)
+## Precomputed Results 
 
 Due to the large size of the experiment outputs (over 3 GB), results are not stored directly in this repository.
 
@@ -189,6 +189,47 @@ Each `.p` file contains:
 - epsilon (if enabled)
 - training histories
 - aggregated multi-seed results
+
+---
+
+## Analysis Notebooks 
+
+We provide Jupyter notebooks for analyzing the experiment outputs:
+
+- `analyze_homogeneous_demonstrators.ipynb`
+- `analyze_heterogeneous_demonstrators.ipynb`
+
+### Purpose
+
+- **Homogeneous notebook**  
+  Used to analyze single-demonstrator experiments (beta recovery, scaling behavior).
+
+- **Heterogeneous notebook**  
+  Used to analyze:
+  - heterogeneous demonstrator experiments (epsilon OFF)
+  - epsilon-only experiments (epsilon ON)
+
+  This notebook visualizes:
+  - inferred policies
+  - visitation distributions
+  - epsilon structure (when enabled)
+  - component-wise comparisons
+
+---
+
+### Usage
+
+1. Ensure the `results/` directory is present (either by running experiments or downloading precomputed results)
+2. Launch Jupyter: `jupyter notebook`
+3. Open the desired notebook and run all cells
+
+---
+
+### Note
+
+- These notebooks are **for visualization and analysis only**
+- They are **not required** to reproduce the results
+- All figures in the report and poster were generated using these analysis workflows
 
 ---
 
