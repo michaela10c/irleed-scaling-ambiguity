@@ -4,7 +4,7 @@
 
 This project studies scaling ambiguity in [IRLEED (Inverse Reinforcement Learning by Estimating Expertise of Demonstrators)](https://arxiv.org/html/2402.01886v2).
 
-We investigate the following question: ***Why does reward recovery succeed while expertise (beta) estimation fails?***
+We investigate the following question: ***Why is reward recovery successful while expertise (beta) estimation remains unidentifiable?***
 
 We evaluate three experimental settings:
 1. Homogeneous setting (single demonstrator, epsilon OFF)
@@ -123,7 +123,7 @@ project_root/
 
 - These results correspond to the experiments described in the report (100 seeds, 1000 iterations).
 - Re-running all experiments from scratch may take several hours to multiple days depending on hardware.
-- The provided results are for convenience only; all results can be reproduced using the commands listed above.
+- The provided results are for convenience; all results can be reproduced using the commands below
 
 
 ## Experiments
@@ -186,6 +186,12 @@ python run_mix.py \
   --demo_betas 1.0 1.0 1.0 \
   --max_steps 1000 
 ```
+
+---
+
+Note:
+- Homogeneous and heterogeneous settings explicitly disable epsilon via `--fix_eps_zero`
+- Epsilon-only setting enables epsilon and is the only configuration where epsilon is learned
 
 ---
 
