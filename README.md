@@ -95,41 +95,15 @@ Heterogeneous:
 Setup:
 - n_components = 1
 - beta ∈ {0.1, 1.0, 5.0, 10.0}
-- epsilon disabled
+- epsilon disabled (--fix_eps_zero)
 - 100 seeds, 1000 steps
 
 #### Run commands:
 ```
-python run_mix.py 
--–save_dir gridworld_simple/irleed 
--–n_components 1 
--–demo_betas 0.1 
--–max_steps 1000
-```
-
-```
-python run_mix.py 
--–save_dir gridworld_simple/irleed 
-–-n_components 1 
-–-demo_betas 1.0 
-–-max_steps 1000
-```
-
-```
-python run_mix.py 
--–save_dir gridworld_simple/irleed 
--–n_components 1 
--–demo_betas 5.0 
--–max_steps 1000
-```
-
-
-```
-python run_mix.py 
--–save_dir gridworld_simple/irleed 
--–n_components 1 
--–demo_betas 10.0 
--–max_steps 1000
+python run_mix.py --save_dir gridworld_simple/irleed --n_components 1 --demo_beta 0.1 --fix_eps_zero --max_steps 1000 
+python run_mix.py --save_dir gridworld_simple/irleed --n_components 1 --demo_beta 1 --fix_eps_zero --max_steps 1000 
+python run_mix.py --save_dir gridworld_simple/irleed --n_components 1 --demo_beta 5 --fix_eps_zero --max_steps 1000 
+python run_mix.py --save_dir gridworld_simple/irleed --n_components 1 --demo_beta 10 --fix_eps_zero --max_steps 1000 
 ```
 
 ---
@@ -139,17 +113,18 @@ python run_mix.py
 Setup:
 - n_components = 3
 - beta = 0.3, 1.0, 5.0
-- epsilon disabled
+- epsilon disabled (--fix_eps_zero)
 - 100 seeds, 1000 steps
 
 #### Run command:
 
 ```
-python run_mix.py 
-–-save_dir gridworld_simple/irleed 
-–-n_components 3 
-–-demo_betas 0.3 1.0 5.0 
-–-max_steps 1000
+python run_mix.py \
+   --save_dir gridworld_simple/irleed \
+   --n_components 3 \
+   --demo_betas 0.3 1.0 5.0 \
+   --fix_eps_zero \
+   --max_steps 1000
 ```
 ---
 
@@ -165,11 +140,11 @@ Setup:
 #### Run command:
 
 ```
-python run_mix.py 
--–save_dir gridworld_simple/irleed_eps_only 
-–-n_components 3 
-–-demo_betas 1.0 1.0 1.0 
-–-max_steps 1000
+python run_mix.py \
+  --save_dir gridworld_simple/irleed_eps_only \
+  --n_components 3 \
+  --demo_betas 1.0 1.0 1.0 \
+  --max_steps 1000 
 ```
 
 ---
