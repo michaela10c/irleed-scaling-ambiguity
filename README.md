@@ -121,7 +121,9 @@ project_root/
 
 ### Note
 
-- These results correspond to the experiments described in the report (100 seeds, 1000 iterations).
+- These results correspond to the experiments described in the report.
+- Homogeneous and heterogeneous experiments use 100 seeds, 1000 iterations, and 5000 trajectories per seed.
+- The epsilon-only follow-up experiment uses 100 seeds, 1000 iterations, and 500 trajectories per seed due to higher computational cost.
 - Re-running all experiments from scratch may take several hours to multiple days depending on hardware.
 - The provided results are for convenience; all results can be reproduced using the commands below
 
@@ -137,6 +139,7 @@ Setup:
 - beta ∈ {0.1, 1.0, 5.0, 10.0}
 - epsilon disabled (--fix_eps_zero)
 - 100 seeds, 1000 steps
+- 5000 trajectories per seed
 
 #### Run commands:
 ```
@@ -155,6 +158,7 @@ Setup:
 - beta = 0.3, 1.0, 5.0
 - epsilon disabled (--fix_eps_zero)
 - 100 seeds, 1000 steps
+- 5000 trajectories per seed
 
 #### Run command:
 
@@ -176,6 +180,9 @@ Setup:
 - epsilon enabled
 - lambda = 2.0
 - 100 seeds, 1000 steps
+- 500 trajectories per seed
+
+Due to increased computational cost from learning component-specific epsilon parameters, fewer trajectories were used in this follow-up experiment.
 
 #### Run command:
 
@@ -262,7 +269,7 @@ Cause:
 
 ## Results Summary
 
-All results are aggregated over multiple random seeds.
+All results are aggregated over multiple random seeds. Homogeneous and heterogeneous experiments use 5000 trajectories per seed, while the epsilon-only follow-up uses 500 trajectories per seed.
 
 ### Beta
 
@@ -309,7 +316,7 @@ epsilon does not induce behavioral separation
 
 ## Final Conclusion
 
-- reward recovery is strong
+- reward recovery is robust under the evaluated settings
 - beta (expertise) is not identifiable
 - components collapse to shared behavior
 
@@ -334,7 +341,9 @@ Scaling ambiguity persists:
 
 ## Notes
 
-- experiments follow the setup described in the report (100 seeds, 1000 iterations)    
+- experiments follow the setup described in the report
+- homogeneous and heterogeneous experiments use 5000 trajectories per seed
+- epsilon-only follow-up uses 500 trajectories per seed
 - homogeneous and heterogeneous experiments disable epsilon  
 - epsilon-only experiment isolates epsilon as the only source of heterogeneity  
 - some seeds may fail due to numerical instability
